@@ -47,7 +47,7 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex>
+      <v-flex class="pa-3">
         <v-card flat>
           <v-card-title>
             <h1>About
@@ -55,22 +55,32 @@
             </h1>
           </v-card-title>
           <v-layout row justify-space-around>
-            <v-flex sm12 md5>
+            <v-flex sm12 md6>
               <v-card-text>
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
-                Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum
+                <p>
+                  Squash is a beautiful racket sport that is also very
+                  well suited for video analysis based on Machine
+                  Learning techniques. In its most common format, it
+                  is played in a relatively small court by two players
+                  that alternately hit the ball performing a limited
+                  set of easily recognizable shots. Given the
+                  contained size of the court, even professional
+                  videos are recorded by a small number of fixed
+                  cameras.
+                </p>
+                <p>
+                  SQUASH<span class="font-weight-bold">AI</span>'s
+                  goal is to build a bridge between the Machine
+                  Learning and the Squash communities, to inspire
+                  researchers and enable them to easily retrieve raw
+                  material and pre-processed datasets to experiment
+                  with.
+                </p>
               </v-card-text>
             </v-flex>
             <v-flex sm12 md5>
               <v-img
                 :src="require('../assets/canarywarf.png')"
-                height="250px"
                 contain>
                 </v-img>
             </v-flex>            

@@ -1,9 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer persistent
-                         absolute
-                         fixed
-                         app
+    <v-navigation-drawer absolute temporary app
                          v-model="drawer">
       <v-list>
         <v-list-tile to="/">
