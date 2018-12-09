@@ -22,8 +22,8 @@
             <h3>Datasets</h3>
             <p>
               Explore existing datasets for training AI models and
-              create your own ones by labeling players, actions and
-              positions in actual games
+              create new ones by labeling players, actions and
+              positions in professional games.
             </p>
           </v-flex>
           <v-flex xs12 sm4 md3>
@@ -32,7 +32,8 @@
             </div>
             <h3>AI in Action</h3>
             <p>
-              Watch AI agents analyze actual games
+              Watch AI agents process actual games, recognize players and
+              understand what happens on court.
             </p>
           </v-flex>
           <v-flex xs12 sm4 md3>
@@ -42,7 +43,8 @@
             <h3>Analysis</h3>
             <p>
               Visualize statistics derived from the automated analysis
-              of real matches
+              of real matches. Get insights such as how much <em>T
+              domination</em> correlates with the final result.
             </p>
           </v-flex>
         </v-layout>
