@@ -35,6 +35,9 @@
         @click.stop="drawer = !drawer">
       </v-toolbar-side-icon>
       <v-toolbar-title class="headline text-uppercase">
+        <v-avatar>
+          <img :src="require('../assets/logo.png')" alt="logo">
+        </v-avatar>
         <v-btn
           flat
           class="headline"
