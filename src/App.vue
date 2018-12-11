@@ -22,11 +22,14 @@ export default {
   data () {
     return {
       locations: [{
-        name: 'About',
-        to: '/about'
+        name: 'Editor',
+        to: '/editor'
+      }, {
+        name: 'Data',
+        to: '/data'
       }, {
         name: 'GitHub',
-        href: 'https://github.com/squashai/squashai',
+        href: 'https://github.com/squashai',
         target: '_blank'
       }]
     }
