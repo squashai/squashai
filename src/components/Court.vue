@@ -1,7 +1,7 @@
 <template>
   <canvas
-    width="300"
-    height="400"
+    width="400"
+    height="300"
     touch-action="none"
     ref="canvas">
   </canvas>
@@ -32,11 +32,10 @@ export default {
 
     
     const camera = new BABYLON.FreeCamera("camera1",
-                                          new BABYLON.Vector3(0, 10, -10),
+                                          new BABYLON.Vector3(0, 5, -8.2),
                                           scene)
 
-    camera.setTarget(BABYLON.Vector3.Zero())
-
+    camera.setTarget(new BABYLON.Vector3(0, 0, -2))
 
     const hemi = new BABYLON.HemisphericLight("light1",
                                               new BABYLON.Vector3(0, 1, 0),
@@ -111,7 +110,8 @@ export default {
     })
 
     window.addEventListener("resize", () => { 
-       engine.resize()
+      engine.resize()
+      refresh = true
     })
 
   }

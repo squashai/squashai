@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0" fluid>
-    <v-layout row wrap>
+    <v-layout row wrap align-center>
       <v-flex xs12 md6>
         <video width="640" height="480">
           <source
