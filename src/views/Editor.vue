@@ -9,9 +9,10 @@
         </video>
       </v-flex>
       <v-flex xs12 md4>
-        <court></court>
+        <court v-model="pos"></court>
       </v-flex>
     </v-layout>
+    <v-btn @click="pos.dark = !pos.dark" :dark="pos.dark">Toggle</v-btn>
   </v-container>
 </template>
 <script>
@@ -20,6 +21,15 @@ import Court from '../components/Court'
 export default {
   components: {
     Court
+  },
+  data() {
+    return {
+      pos: {
+        x: -2,
+        y: -2,
+        dark: true
+      }
+    }
   }
 }
 </script>

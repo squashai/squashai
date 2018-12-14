@@ -8,6 +8,7 @@
 </template>
 <script>
 import * as BABYLON from 'babylonjs'
+import _ from 'lodash'
 import parquet from '../assets/ground.png'
 
 const dimensions = {
@@ -22,54 +23,106 @@ const dimensions = {
 
 export default {
   name: 'Court',
+  props: {
+    value: {
+      type: Object,
+      default: () => {
+        return {
+          x: 0,
+          y: 0,
+          dark: false
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      scene: null,
+      engine: null,
+      disc: null,
+      refresh: true
+    }
+  },
+  computed: {
+
+  },
+  watch: {
+    'value.dark'() {
+      // eslint-disable-next-line
+      console.log('value.dark changed!')
+      this.disc.material.diffuseColor = (this.value.dark ?
+                                         new BABYLON.Color3(0, 0, 0) :
+                                         new BABYLON.Color3(1, 1, 1))
+      this.refresh = true
+    },
+    dark() {
+      // eslint-disable-next-line
+      console.log('dark changed!')
+    },
+    material() {
+      this.refresh = true
+      // eslint-disable-next-line
+      console.log('material changed!')
+    }
+  },
+  methods: {
+    resize() {
+      this.engine.resize()
+      this.refresh = true
+    }
+  },
   mounted() {
-    let refresh = true
 
-    const engine = new BABYLON.Engine(this.$refs.canvas, true)
-
-    const scene = new BABYLON.Scene(engine)
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+    this.engine = new BABYLON.Engine(this.$el, true)
+    this.scene = new BABYLON.Scene(this.engine)
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
 
     
     const camera = new BABYLON.FreeCamera("camera1",
                                           new BABYLON.Vector3(0, 5, -8.2),
-                                          scene)
+                                          this.scene)
 
     camera.setTarget(new BABYLON.Vector3(0, 0, -2))
 
     const hemi = new BABYLON.HemisphericLight("light1",
                                               new BABYLON.Vector3(0, 1, 0),
-                                              scene)
+                                              this.scene)
     hemi.intensity = 0.4
 
     const light = new BABYLON.DirectionalLight("dir01",
                                                new BABYLON.Vector3(0,-1, 0),
-                                               scene)
+                                               this.scene)
     light.position = new BABYLON.Vector3(0, 5, 0);
     light.intensity = 0.9;
 
     const ground = BABYLON.MeshBuilder.CreateGround("ground1", {
       width: dimensions.court.width,
       height: dimensions.court.length
-    }, scene)
+    }, this.scene)
 
-    const material = new BABYLON.StandardMaterial("ground", scene)
-    material.diffuseTexture = new BABYLON.Texture(parquet, scene)
+    const material = new BABYLON.StandardMaterial("ground", this.scene)
+    material.diffuseTexture = new BABYLON.Texture(parquet, this.scene)
     material.diffuseTexture.onLoadObservable.add(() => {
-      refresh = true
+      this.refresh = true
     })
     material.specularColor = new BABYLON.Color3(0, 0, 0)
     ground.material = material
 
-
-    const disc = BABYLON.MeshBuilder.CreateDisc("disc1", {
+    this.disc = BABYLON.MeshBuilder.CreateDisc("disc1", {
       radius: dimensions.players.radius
-    }, scene)
-    disc.rotation.x = Math.PI / 2
-    disc.position.y = 0.1
+    }, this.scene)
+    this.disc.rotation.x = Math.PI / 2
+    this.disc.position.y = 0.1
+    this.disc.position.x = this.value.x
+    this.disc.position.z = this.value.y
+
+    this.disc.material = new BABYLON.StandardMaterial("myMaterial", this.scene)
+    this.disc.material.diffuseColor = (this.value.dark ?
+                                       new BABYLON.Color3(0, 0, 0) :
+                                       new BABYLON.Color3(1, 1, 1))
 
     const shadowGenerator = new BABYLON.ShadowGenerator(1024, light)
-    shadowGenerator.addShadowCaster(disc)
+    shadowGenerator.addShadowCaster(this.disc)
     shadowGenerator.useExponentialShadowMap = true
 
     ground.receiveShadows = true
@@ -80,40 +133,44 @@ export default {
 
     pointerDragBehavior.useObjectOrienationForDragging = false
     
-    disc.addBehavior(pointerDragBehavior)
+    this.disc.addBehavior(pointerDragBehavior)
     
     pointerDragBehavior.useObjectOrienationForDragging = false
     pointerDragBehavior.updateDragPlane = true
 
     pointerDragBehavior.onDragStartObservable.add(() => {
-      refresh = true
+      this.refresh = true
     })
 
     pointerDragBehavior.onDragObservable.add(() => {
-      refresh = true
+      this.refresh = true
     })
 
     pointerDragBehavior.onDragEndObservable.add(() => {
       const w = dimensions.court.width / 2 - dimensions.players.radius,
             l = dimensions.court.length / 2 - dimensions.players.radius
-      disc.position.x = Math.max(-w, Math.min(w, disc.position.x))
-      disc.position.z = Math.max(-l, Math.min(l, disc.position.z))
+      this.disc.position.x = Math.max(-w, Math.min(w, this.disc.position.x))
+      this.disc.position.z = Math.max(-l, Math.min(l, this.disc.position.z))
+      this.$emit('input', _.defaultsDeep({
+        x: this.disc.position.x,
+        y: this.disc.position.z
+      }, this.value))
 
-      refresh = true
+      this.refresh = true
     })
 
-    engine.runRenderLoop(function () { 
-      if (refresh) {
-        scene.render()
-        refresh = false
+    this.engine.runRenderLoop(() => { 
+      if (this.refresh) {
+        this.scene.render()
+        this.refresh = false
       }
     })
 
-    window.addEventListener("resize", () => { 
-      engine.resize()
-      refresh = true
-    })
+    window.addEventListener("resize", this.resize)
 
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.resize)
   }
 }
 </script>
