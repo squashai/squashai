@@ -30,7 +30,19 @@ export default {
         return {
           x: 0,
           y: 0,
-          dark: false
+          dark: false,
+          players: {
+            1: {
+              x: -2,
+              y: -2,
+              color: '#555555'
+            },
+            2: {
+              x: 2,
+              y: -2,
+              color: '#555555'
+            }
+          }
         }
       }
     }
@@ -40,11 +52,9 @@ export default {
       scene: null,
       engine: null,
       disc: null,
+      players: null,
       refresh: true
     }
-  },
-  computed: {
-
   },
   watch: {
     'value.dark'() {
@@ -54,15 +64,6 @@ export default {
                                          new BABYLON.Color3(0, 0, 0) :
                                          new BABYLON.Color3(1, 1, 1))
       this.refresh = true
-    },
-    dark() {
-      // eslint-disable-next-line
-      console.log('dark changed!')
-    },
-    material() {
-      this.refresh = true
-      // eslint-disable-next-line
-      console.log('material changed!')
     }
   },
   methods: {
@@ -78,7 +79,7 @@ export default {
     this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
 
     
-    const camera = new BABYLON.FreeCamera("camera1",
+    const camera = new BABYLON.FreeCamera("camera",
                                           new BABYLON.Vector3(0, 5, -8.2),
                                           this.scene)
 
