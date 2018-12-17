@@ -9,10 +9,19 @@
         </video>
       </v-flex>
       <v-flex xs12 md4>
-        <court v-model="pos"></court>
+        <court v-model="players"></court>
       </v-flex>
     </v-layout>
-    <v-btn @click="pos.dark = !pos.dark" :dark="pos.dark">Toggle</v-btn>
+    <v-btn
+      @click="players[1].dark = !players[1].dark"
+      :dark="players[1].dark">
+      Player 1
+    </v-btn>
+    <v-btn
+      @click="players[2].dark = !players[2].dark"
+      :dark="players[2].dark">
+      Player 2
+    </v-btn>
   </v-container>
 </template>
 <script>
@@ -24,10 +33,17 @@ export default {
   },
   data() {
     return {
-      pos: {
-        x: -2,
-        y: -2,
-        dark: true
+      players: {
+        1: {
+          x: -2,
+          y: -2,
+          dark: false,
+        },
+        2: {
+          x: 2,
+          y: -2,
+          dark: true,
+        }
       }
     }
   }

@@ -7,7 +7,9 @@
   </canvas>
 </template>
 <script>
-import * as BABYLON from 'babylonjs'
+import { Engine, Scene, FreeCamera, HemisphericLight, DirectionalLight,
+         MeshBuilder, StandardMaterial, Texture, ShadowGenerator,
+         PointerDragBehavior, Vector3, Color3, Color4, } from 'babylonjs'
 import _ from 'lodash'
 import parquet from '../assets/ground.png'
 
@@ -28,20 +30,15 @@ export default {
       type: Object,
       default: () => {
         return {
-          x: 0,
-          y: 0,
-          dark: false,
-          players: {
-            1: {
-              x: -2,
-              y: -2,
-              color: '#555555'
-            },
-            2: {
-              x: 2,
-              y: -2,
-              color: '#555555'
-            }
+          1: {
+            x: -2,
+            y: -2,
+            dark: false
+          },
+          2: {
+            x: 2,
+            y: -2,
+            dark: true
           }
         }
       }
@@ -51,114 +48,144 @@ export default {
     return {
       scene: null,
       engine: null,
-      disc: null,
+      camera: null,
+      lights: null,
+      ground: null,
       players: null,
       refresh: true
     }
   },
   watch: {
-    'value.dark'() {
-      // eslint-disable-next-line
-      console.log('value.dark changed!')
-      this.disc.material.diffuseColor = (this.value.dark ?
-                                         new BABYLON.Color3(0, 0, 0) :
-                                         new BABYLON.Color3(1, 1, 1))
-      this.refresh = true
+    value: {
+      deep: true,
+      handler() {
+        this.players[1].position.x = this.value[1].x
+        this.players[1].position.z = this.value[1].y
+        this.players[2].position.x = this.value[2].x
+        this.players[2].position.z = this.value[2].y
+        this.players[1].material.diffuseColor = (this.value[1].dark ?
+                                                 new Color3(0, 0, 0) :
+                                                 new Color3(1, 1, 1))
+        this.players[2].material.diffuseColor = (this.value[2].dark ?
+                                                 new Color3(0, 0, 0) :
+                                                 new Color3(1, 1, 1))
+        this.refresh = true
+      }
     }
   },
   methods: {
     resize() {
       this.engine.resize()
       this.refresh = true
+    },
+    createCamera() {
+      const camera = new FreeCamera("camera", new Vector3(0, 5, -8.2),
+                                    this.scene)
+      camera.setTarget(new Vector3(0, 0, -2))
+      return camera
+    },
+    createLights() {
+      const hemispheric = new HemisphericLight("hlight", new Vector3(0, 1, 0),
+                                               this.scene)
+      hemispheric.intensity = 0.4
+
+      const directional = new DirectionalLight("dlight", new Vector3(0,-1, 0),
+                                       this.scene)
+      directional.position = new Vector3(0, 5, 0)
+      directional.intensity = 0.9
+
+      return {
+        hemispheric,
+        directional
+      }      
+    },
+    createGround() {
+      const ground = MeshBuilder.CreateGround("ground1", {
+        width: dimensions.court.width,
+        height: dimensions.court.length
+      }, this.scene)
+
+      const material = new StandardMaterial("ground", this.scene)
+      material.diffuseTexture = new Texture(parquet, this.scene)
+      material.diffuseTexture.onLoadObservable.add(() => {
+        this.refresh = true
+      })
+      material.specularColor = new Color3(0, 0, 0)
+      ground.material = material
+      ground.receiveShadows = true
+      return ground
+    },
+    createPlayer(name, specs) {
+      const player = MeshBuilder.CreateDisc(name, {
+        radius: dimensions.players.radius
+      }, this.scene)
+      player.rotation.x = Math.PI / 2
+      player.position.y = 0.1
+      player.position.x = specs.x
+      player.position.z = specs.y
+
+      player.material = new StandardMaterial(`${name}Material`, this.scene)
+      player.material.diffuseColor = (specs.dark ?
+                                      new Color3(0, 0, 0) :
+                                      new Color3(1, 1, 1))
+
+      const behavior = new PointerDragBehavior({
+        dragPlaneNormal: new Vector3(0,1,0)
+      })
+      behavior.useObjectOrienationForDragging = false
+      behavior.updateDragPlane = true
+
+      player.addBehavior(behavior)
+
+      behavior.onDragStartObservable.add(() => {
+        this.refresh = true
+      })
+
+      behavior.onDragObservable.add(() => {
+        this.refresh = true
+      })
+
+      behavior.onDragEndObservable.add(() => {
+        const w = dimensions.court.width / 2 - dimensions.players.radius,
+              l = dimensions.court.length / 2 - dimensions.players.radius
+        player.position.x = Math.max(-w, Math.min(w, player.position.x))
+        player.position.z = Math.max(-l, Math.min(l, player.position.z))
+        this.refresh = true
+        this.notify()
+      })
+      return player
+    },
+    notify() {
+      this.$emit('input', _.defaultsDeep({
+        1: {
+          x: this.players[1].position.x,
+          y: this.players[1].position.z
+        },
+        2: {
+          x: this.players[2].position.x,
+          y: this.players[2].position.z
+        }
+      }, this.value))
     }
   },
   mounted() {
 
-    this.engine = new BABYLON.Engine(this.$el, true)
-    this.scene = new BABYLON.Scene(this.engine)
-    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+    this.engine = new Engine(this.$el, true)
+    this.scene = new Scene(this.engine)
+    this.scene.clearColor = new Color4(0, 0, 0, 0)
 
-    
-    const camera = new BABYLON.FreeCamera("camera",
-                                          new BABYLON.Vector3(0, 5, -8.2),
-                                          this.scene)
+    this.camera = this.createCamera()
+    this.lights = this.createLights()
+    this.ground = this.createGround()
+    this.players = {
+      1: this.createPlayer('player1', this.value[1]),
+      2: this.createPlayer('player2', this.value[2])
+    }
 
-    camera.setTarget(new BABYLON.Vector3(0, 0, -2))
-
-    const hemi = new BABYLON.HemisphericLight("light1",
-                                              new BABYLON.Vector3(0, 1, 0),
-                                              this.scene)
-    hemi.intensity = 0.4
-
-    const light = new BABYLON.DirectionalLight("dir01",
-                                               new BABYLON.Vector3(0,-1, 0),
-                                               this.scene)
-    light.position = new BABYLON.Vector3(0, 5, 0);
-    light.intensity = 0.9;
-
-    const ground = BABYLON.MeshBuilder.CreateGround("ground1", {
-      width: dimensions.court.width,
-      height: dimensions.court.length
-    }, this.scene)
-
-    const material = new BABYLON.StandardMaterial("ground", this.scene)
-    material.diffuseTexture = new BABYLON.Texture(parquet, this.scene)
-    material.diffuseTexture.onLoadObservable.add(() => {
-      this.refresh = true
-    })
-    material.specularColor = new BABYLON.Color3(0, 0, 0)
-    ground.material = material
-
-    this.disc = BABYLON.MeshBuilder.CreateDisc("disc1", {
-      radius: dimensions.players.radius
-    }, this.scene)
-    this.disc.rotation.x = Math.PI / 2
-    this.disc.position.y = 0.1
-    this.disc.position.x = this.value.x
-    this.disc.position.z = this.value.y
-
-    this.disc.material = new BABYLON.StandardMaterial("myMaterial", this.scene)
-    this.disc.material.diffuseColor = (this.value.dark ?
-                                       new BABYLON.Color3(0, 0, 0) :
-                                       new BABYLON.Color3(1, 1, 1))
-
-    const shadowGenerator = new BABYLON.ShadowGenerator(1024, light)
-    shadowGenerator.addShadowCaster(this.disc)
-    shadowGenerator.useExponentialShadowMap = true
-
-    ground.receiveShadows = true
-    
-    const pointerDragBehavior = new BABYLON.PointerDragBehavior({
-      dragPlaneNormal: new BABYLON.Vector3(0,1,0)
-    })
-
-    pointerDragBehavior.useObjectOrienationForDragging = false
-    
-    this.disc.addBehavior(pointerDragBehavior)
-    
-    pointerDragBehavior.useObjectOrienationForDragging = false
-    pointerDragBehavior.updateDragPlane = true
-
-    pointerDragBehavior.onDragStartObservable.add(() => {
-      this.refresh = true
-    })
-
-    pointerDragBehavior.onDragObservable.add(() => {
-      this.refresh = true
-    })
-
-    pointerDragBehavior.onDragEndObservable.add(() => {
-      const w = dimensions.court.width / 2 - dimensions.players.radius,
-            l = dimensions.court.length / 2 - dimensions.players.radius
-      this.disc.position.x = Math.max(-w, Math.min(w, this.disc.position.x))
-      this.disc.position.z = Math.max(-l, Math.min(l, this.disc.position.z))
-      this.$emit('input', _.defaultsDeep({
-        x: this.disc.position.x,
-        y: this.disc.position.z
-      }, this.value))
-
-      this.refresh = true
-    })
+    const generator = new ShadowGenerator(1024, this.lights.directional)
+    generator.useExponentialShadowMap = true
+    generator.addShadowCaster(this.players[1])
+    generator.addShadowCaster(this.players[2])
 
     this.engine.runRenderLoop(() => { 
       if (this.refresh) {
