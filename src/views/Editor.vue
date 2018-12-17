@@ -1,12 +1,12 @@
 <template>
   <v-container fluid>
     <v-layout justify-between>
-      <v-flex xs4>
+      <v-flex xs6 md4>
         <player
           v-model="players[1]"
           label="Player 1"/>
       </v-flex>
-      <v-flex xs4>
+      <v-flex xs6 md4>
         <player
           v-model="players[2]"
           label="Player 2"/>
@@ -14,7 +14,7 @@
     </v-layout>
     <v-layout row wrap align-center  class="pa-0">
       <v-flex xs12 md6>
-        <video>
+        <video controls>
           <source
             src="https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4"
             type="video/mp4">
