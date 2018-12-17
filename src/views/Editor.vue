@@ -1,8 +1,20 @@
 <template>
-  <v-container class="pa-0" fluid>
-    <v-layout row wrap align-center>
+  <v-container fluid>
+    <v-layout justify-between>
+      <v-flex xs4>
+        <player
+          v-model="players[1]"
+          label="Player 1"/>
+      </v-flex>
+      <v-flex xs4>
+        <player
+          v-model="players[2]"
+          label="Player 2"/>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap align-center  class="pa-0">
       <v-flex xs12 md6>
-        <video width="640" height="480">
+        <video>
           <source
             src="https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4"
             type="video/mp4">
@@ -12,44 +24,38 @@
         <court v-model="players"></court>
       </v-flex>
     </v-layout>
-    <v-btn
-      @click="players[1].dark = !players[1].dark"
-      :dark="players[1].dark">
-      Player 1
-    </v-btn>
-    <v-btn
-      @click="players[2].dark = !players[2].dark"
-      :dark="players[2].dark">
-      Player 2
-    </v-btn>
   </v-container>
 </template>
 <script>
 import Court from '../components/Court'
+import Player from '../components/Player'
 
 export default {
   components: {
-    Court
+    Court,
+    Player
   },
   data() {
     return {
       players: {
         1: {
+          name: null,
+          color: '#FFFFFF',
           x: -2,
-          y: -2,
-          dark: false,
+          y: -2
         },
         2: {
+          name: null,
+          color: '#000000',
           x: 2,
-          y: -2,
-          dark: true,
+          y: -2
         }
       }
     }
   }
 }
 </script>
-<style>
+<style scoped>
 video {
     width: 100%;
 }

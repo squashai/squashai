@@ -33,12 +33,12 @@ export default {
           1: {
             x: -2,
             y: -2,
-            dark: false
+            color: '#FFFFFF'
           },
           2: {
             x: 2,
             y: -2,
-            dark: true
+            color: '#000000'
           }
         }
       }
@@ -63,12 +63,10 @@ export default {
         this.players[1].position.z = this.value[1].y
         this.players[2].position.x = this.value[2].x
         this.players[2].position.z = this.value[2].y
-        this.players[1].material.diffuseColor = (this.value[1].dark ?
-                                                 new Color3(0, 0, 0) :
-                                                 new Color3(1, 1, 1))
-        this.players[2].material.diffuseColor = (this.value[2].dark ?
-                                                 new Color3(0, 0, 0) :
-                                                 new Color3(1, 1, 1))
+        this.players[1].material.diffuseColor =
+          Color3.FromHexString(this.value[1].color)
+        this.players[2].material.diffuseColor =
+          Color3.FromHexString(this.value[2].color)
         this.refresh = true
       }
     }
@@ -125,9 +123,8 @@ export default {
       player.position.z = specs.y
 
       player.material = new StandardMaterial(`${name}Material`, this.scene)
-      player.material.diffuseColor = (specs.dark ?
-                                      new Color3(0, 0, 0) :
-                                      new Color3(1, 1, 1))
+
+      player.material.diffuseColor = Color3.FromHexString(specs.color)
 
       const behavior = new PointerDragBehavior({
         dragPlaneNormal: new Vector3(0,1,0)
@@ -202,7 +199,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 canvas {
     margin: 5%;
     width: 90%;
