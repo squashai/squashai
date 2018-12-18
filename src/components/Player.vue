@@ -2,7 +2,9 @@
   <v-text-field
     v-model="value.name"
     :label="label"
-    type="text">
+    type="text"
+    :prepend-inner-icon="!!value.visible ? 'visibility' : 'visibility_off'"
+    @click:prepend-inner="toggle">
     <v-menu
       slot="append-outer"
       :close-on-content-click="false"
@@ -37,7 +39,8 @@ export default {
       default: () => {
         return {
           name: null,
-          color: '#FFFFFF'
+          color: '#FFFFFF',
+          visible: true
         }
       }
     },
@@ -50,7 +53,6 @@ export default {
   },
   data() {
     return {
-      name: null,
       menu: false,
       palette: [
         '#FFFFFF', '#000000', '#9E9E9E', '#F44336', '#FF9800', '#FFEB3B',
@@ -65,6 +67,13 @@ export default {
     'color.hex'() {
       this.$emit('input', _.defaultsDeep({
         color: this.color.hex
+      }, this.value))
+    }
+  },
+  methods: {
+    toggle() {
+      this.$emit('input', _.defaultsDeep({
+        visible: !this.value.visible
       }, this.value))
     }
   }

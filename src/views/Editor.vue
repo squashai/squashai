@@ -42,13 +42,15 @@ export default {
           name: null,
           color: '#FFFFFF',
           x: -2,
-          y: -2
+          y: -2,
+          visible: true
         },
         2: {
           name: null,
           color: '#000000',
           x: 2,
-          y: -2
+          y: -2,
+          visible: true
         }
       }
     }

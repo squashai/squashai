@@ -33,12 +33,14 @@ export default {
           1: {
             x: -2,
             y: -2,
-            color: '#FFFFFF'
+            color: '#FFFFFF',
+            visible: true
           },
           2: {
             x: 2,
             y: -2,
-            color: '#000000'
+            color: '#000000',
+            visible: true
           }
         }
       }
@@ -59,14 +61,13 @@ export default {
     value: {
       deep: true,
       handler() {
-        this.players[1].position.x = this.value[1].x
-        this.players[1].position.z = this.value[1].y
-        this.players[2].position.x = this.value[2].x
-        this.players[2].position.z = this.value[2].y
-        this.players[1].material.diffuseColor =
-          Color3.FromHexString(this.value[1].color)
-        this.players[2].material.diffuseColor =
-          Color3.FromHexString(this.value[2].color)
+        for (const k in this.players) {
+          this.players[k].setEnabled(!!this.value[k].visible)
+          this.players[k].position.x = this.value[k].x
+          this.players[k].position.z = this.value[k].y
+          this.players[k].material.diffuseColor =
+            Color3.FromHexString(this.value[k].color)
+        }
         this.refresh = true
       }
     }
