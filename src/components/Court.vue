@@ -119,7 +119,7 @@ export default {
         radius: dimensions.players.radius
       }, this.scene)
       player.rotation.x = Math.PI / 2
-      player.position.y = 0.1
+      player.position.y = 0.05
       player.position.x = specs.x
       player.position.z = specs.y
 
