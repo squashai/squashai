@@ -14,11 +14,14 @@
     </v-layout>
     <v-layout row wrap align-center  class="pa-0">
       <v-flex xs12 md6>
-        <video controls>
-          <source
-            src="https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4"
-            type="video/mp4">
-        </video>
+        <vue-plyr
+          :options="options">
+          <video>
+            <source
+              src="https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4"
+              type="video/mp4">
+          </video>
+        </vue-plyr>
       </v-flex>
       <v-flex xs12 md4>
         <court v-model="players"></court>
@@ -27,16 +30,25 @@
   </v-container>
 </template>
 <script>
+import { VuePlyr } from 'vue-plyr'
 import Court from '../components/Court'
 import Player from '../components/Player'
 
 export default {
   components: {
     Court,
-    Player
+    Player,
+    VuePlyr
   },
   data() {
     return {
+      options: {
+        seekTime: 0.5,
+        controls: [
+          'play', 'rewind', 'fast-forward', 'progress', 'current-time',
+          'mute', 'volume'
+        ]
+      },
       players: {
         1: {
           name: null,
