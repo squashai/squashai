@@ -68,6 +68,11 @@ export default {
       this.$emit('input', _.defaultsDeep({
         color: this.color.hex
       }, this.value))
+    },
+    'value.color'() {
+      this.color = {
+        hex: this.value.color
+      }
     }
   },
   methods: {

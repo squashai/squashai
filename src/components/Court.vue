@@ -28,7 +28,7 @@ export default {
   props: {
     value: {
       type: Object,
-      default: () => {
+      default() {
         return {
           1: {
             x: -2,
@@ -43,6 +43,12 @@ export default {
             visible: true
           }
         }
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default() {
+        return false
       }
     }
   },
@@ -70,6 +76,10 @@ export default {
         }
         this.refresh = true
       }
+    },
+    disabled() {
+      this.players[1].controller.enabled = !this.disabled
+      this.players[2].controller.enabled = !this.disabled
     }
   },
   methods: {
@@ -132,9 +142,10 @@ export default {
       })
       behavior.useObjectOrienationForDragging = false
       behavior.updateDragPlane = true
-
+      
       player.addBehavior(behavior)
-
+      player.controller = behavior
+      
       behavior.onDragStartObservable.add(() => {
         this.refresh = true
       })
