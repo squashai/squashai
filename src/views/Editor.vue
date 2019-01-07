@@ -141,9 +141,9 @@ export default {
               this.time >= this.labels[this.labels.length - 1].time)
     },
     current() {
-      const time = this.time
-      const labels = this.labels
-      return _.find(labels, { time })
+      return _.find(this.labels, {
+        time: this.time
+      })
     }
   },
   methods: {
@@ -153,7 +153,6 @@ export default {
       })
       if (label) {
         this.video.currentTime = label.time
-        this.players = label.players
       }
     },
     prev() {
@@ -162,7 +161,6 @@ export default {
       })
       if (label) {
         this.video.currentTime = label.time
-        this.players = label.players
       }
     },
     toggle() {
@@ -179,6 +177,13 @@ export default {
           players: _.cloneDeep(this.players)
         }
         this.labels.splice(_.sortedIndexBy(this.labels, val, 'time'), 0, val)
+      }
+    }
+  },
+  watch: {
+    current() {
+      if (this.current) {
+        this.players = _.cloneDeep(this.current.players)
       }
     }
   },
