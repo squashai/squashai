@@ -4,12 +4,14 @@
       <v-flex xs6 md4>
         <player
           v-model="players[1]"
-          label="Player 1"/>
+          label="Player 1"
+          :disabled="!!current"/>
       </v-flex>
       <v-flex xs6 md4>
         <player
           v-model="players[2]"
-          label="Player 2"/>
+          label="Player 2"
+          :disabled="!!current"/>
       </v-flex>
     </v-layout>
     <v-layout row wrap align-end class="pa-0">
@@ -29,61 +31,53 @@
       <v-flex xs12 md4>
         <v-layout column>
           <v-flex>
+            <v-layout justify-center row>
+              <div class="mr-5">
+                <v-switch
+                  v-model="action"
+                  label="Action"
+                  :disabled="!!current">
+                </v-switch>
+              </div>
+              <div>
+                <v-switch
+                  v-model="replay"
+                  label="Replay"
+                  :disabled="!!current">
+                </v-switch>
+              </div>
+            </v-layout>
+          </v-flex>
+          <v-flex>
             <court
               v-model="players"
-              :disabled="frozen">
+              :disabled="!!current">
             </court>
           </v-flex>
           <v-flex>
             <v-layout justify-center row>
               <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
                 @click="toggle()"
-                :depressed="!!current">
-                Label
+                :color="current ? 'primary' : undefined"
+                icon>
+                <v-icon>label</v-icon>
               </v-btn>
               <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
-                disabled>
-                Replay
-              </v-btn>
-              <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
-                disabled>
-                Action
-              </v-btn>
-            </v-layout>
-          </v-flex>
-          <v-flex>
-            <v-layout justify-center row>
-              <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
                 @click="prev()"
-                :disabled="first">
+                :disabled="first"
+                icon>
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
               <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
                 @click="next()"
-                :disabled="last">
+                :disabled="last"
+                icon>
                 <v-icon>fast_forward</v-icon>
               </v-btn>
               <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
                 @click="save()"
-                :disabled="labels.length === 0">
+                :disabled="labels.length === 0"
+                icon>
                 <v-icon>get_app</v-icon>
               </v-btn>
             </v-layout>
@@ -107,7 +101,6 @@ export default {
   },
   data() {
     return {
-      frozen: false,
       options: {
         seekTime: 0.5,
         invertTime: false,
@@ -133,6 +126,8 @@ export default {
         }
       },
       time: 0,
+      action: false,
+      replay: false,
       labels: []
     }
   },
@@ -182,6 +177,8 @@ export default {
       } else {
         const val = {
           time: this.time,
+          action: this.action,
+          replay: this.replay,
           players: _.cloneDeep(this.players)
         }
         this.labels.splice(_.sortedIndexBy(this.labels, val, 'time'), 0, val)
@@ -203,6 +200,8 @@ export default {
     current() {
       if (this.current) {
         this.players = _.cloneDeep(this.current.players)
+        this.action = this.current.action
+        this.replay = this.current.replay
       }
     }
   },

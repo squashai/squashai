@@ -78,8 +78,11 @@ export default {
       }
     },
     disabled() {
-      this.players[1].controller.enabled = !this.disabled
-      this.players[2].controller.enabled = !this.disabled
+      for (const k in this.players) {
+        this.players[k].controller.enabled = !this.disabled
+        this.players[k].material.alpha = (this.disabled ? 0.7 : 1)
+      }
+      this.refresh = true
     }
   },
   methods: {

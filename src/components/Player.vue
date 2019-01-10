@@ -4,7 +4,8 @@
     :label="label"
     type="text"
     :prepend-inner-icon="!!value.visible ? 'visibility' : 'visibility_off'"
-    @click:prepend-inner="toggle">
+    @click:prepend-inner="toggle"
+    :disabled="disabled">
     <v-menu
       slot="append-outer"
       :close-on-content-click="false"
@@ -36,7 +37,7 @@ export default {
   props: {
     value: {
       type: Object,
-      default: () => {
+      default() {
         return {
           name: null,
           color: '#FFFFFF',
@@ -46,8 +47,14 @@ export default {
     },
     label: {
       type: String,
-      default: () => {
+      default() {
         return null
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default() {
+        return false
       }
     }
   },
