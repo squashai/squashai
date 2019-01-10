@@ -40,26 +40,6 @@
                 small
                 color="grey lighten-3"
                 class="mb-0"
-                @click="prev()"
-                :disabled="first">
-                <v-icon>fast_rewind</v-icon>
-              </v-btn>
-              <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
-                @click="next()"
-                :disabled="last">
-                <v-icon>fast_forward</v-icon>
-              </v-btn>
-            </v-layout>
-          </v-flex>
-          <v-flex>
-            <v-layout justify-center row>
-              <v-btn
-                small
-                color="grey lighten-3"
-                class="mb-0"
                 @click="toggle()"
                 :depressed="!!current">
                 Label
@@ -77,6 +57,34 @@
                 class="mb-0"
                 disabled>
                 Action
+              </v-btn>
+            </v-layout>
+          </v-flex>
+          <v-flex>
+            <v-layout justify-center row>
+              <v-btn
+                small
+                color="grey lighten-3"
+                class="mb-0"
+                @click="prev()"
+                :disabled="first">
+                <v-icon>fast_rewind</v-icon>
+              </v-btn>
+              <v-btn
+                small
+                color="grey lighten-3"
+                class="mb-0"
+                @click="next()"
+                :disabled="last">
+                <v-icon>fast_forward</v-icon>
+              </v-btn>
+              <v-btn
+                small
+                color="grey lighten-3"
+                class="mb-0"
+                @click="save()"
+                :disabled="labels.length === 0">
+                <v-icon>get_app</v-icon>
               </v-btn>
             </v-layout>
           </v-flex>
@@ -178,6 +186,17 @@ export default {
         }
         this.labels.splice(_.sortedIndexBy(this.labels, val, 'time'), 0, val)
       }
+    },
+    save() {
+      const blob = new Blob([JSON.stringify(this.labels, null, '  ')], {
+        "type": "application/json"
+      })
+      const a = document.createElement("a")
+      a.download = 'test.json'
+      a.href = URL.createObjectURL(blob)
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     }
   },
   watch: {
