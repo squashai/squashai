@@ -60,7 +60,7 @@
             </court>
           </v-flex>
           <v-flex>
-            <v-layout justify-center row>
+            <v-layout align-center row>
               <v-btn
                 @click="toggle"
                 :color="current ? 'primary' : undefined"
@@ -79,6 +79,16 @@
                 icon>
                 <v-icon>fast_forward</v-icon>
               </v-btn>
+              <v-slider
+                class="mx-2"
+                :min="labels.length > 0 ? 1 : 0"
+                :max="labels.length"
+                v-model="position"
+                disabled>
+              </v-slider>
+              <span class="grey--text">
+                {{ current ? position : '-' }}/{{ labels.length }}
+              </span>
               <v-btn
                 @click="save"
                 :disabled="labels.length === 0"
@@ -169,6 +179,13 @@ export default {
       return _.find(this.labels, {
         time: this.time
       })
+    },
+    position() {
+      const idx = _.findIndex(this.labels, (l) => {
+        return l.time >= this.time
+      })
+
+      return (idx >= 0 ? idx + 1 : this.labels.length)
     }
   },
   methods: {
