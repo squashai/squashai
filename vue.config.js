@@ -5,5 +5,6 @@ module.exports = {
       cannon: true,
       earcut: true
     }
-  }
+  },
+  baseUrl: process.env.VUE_APP_BASE_URL || '/'
 }

@@ -1,5 +1,10 @@
 <template>
   <v-container fluid>
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ title }}
+      </v-toolbar-title>
+    </v-toolbar>
     <v-layout justify-between>
       <v-flex xs6 md4>
         <player
@@ -22,8 +27,8 @@
             :options="options">
             <video>
               <source
-                src="https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4"
-                type="video/mp4">
+                :src="source.url"
+                :type="source.type">
             </video>
           </vue-plyr>
         </v-card>
@@ -57,25 +62,25 @@
           <v-flex>
             <v-layout justify-center row>
               <v-btn
-                @click="toggle()"
+                @click="toggle"
                 :color="current ? 'primary' : undefined"
                 icon>
                 <v-icon>label</v-icon>
               </v-btn>
               <v-btn
-                @click="prev()"
+                @click="prev"
                 :disabled="first"
                 icon>
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
               <v-btn
-                @click="next()"
+                @click="next"
                 :disabled="last"
                 icon>
                 <v-icon>fast_forward</v-icon>
               </v-btn>
               <v-btn
-                @click="save()"
+                @click="save"
                 :disabled="labels.length === 0"
                 icon>
                 <v-icon>get_app</v-icon>
@@ -98,6 +103,23 @@ export default {
     Court,
     Player,
     VuePlyr
+  },
+  props: {
+    title: {
+      type: String,
+      default() {
+        return 'Squash: Men\'s Round 3 Roundup - Hong Kong Open 2018'
+      }
+    },
+    source: {
+      type: Object,
+      default() {
+        return {
+          url: 'https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4',
+          type: 'video/mp4'
+        }
+      }
+    }
   },
   data() {
     return {
@@ -185,7 +207,10 @@ export default {
       }
     },
     save() {
-      const blob = new Blob([JSON.stringify(this.labels, null, '  ')], {
+      const blob = new Blob([JSON.stringify({
+        source: this.source,
+        labels: this.labels
+      }, null, '  ')], {
         "type": "application/json"
       })
       const a = document.createElement("a")
