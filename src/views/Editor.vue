@@ -129,6 +129,12 @@ export default {
           type: 'video/mp4'
         }
       }
+    },
+    restored: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   data() {
@@ -160,7 +166,7 @@ export default {
       time: 0,
       action: false,
       replay: false,
-      labels: []
+      labels: _.cloneDeep(this.restored)
     }
   },
   computed: {

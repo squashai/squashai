@@ -1,6 +1,6 @@
 <template>
   <v-card
-    @click="open">
+    @click="launch">
     <v-img :src="thumbnail"></v-img>
     <v-card-title primary-title>
       <div>{{ title }}</div>
@@ -37,7 +37,7 @@ export default {
     }
   },
   methods: {
-    open() {
+    launch() {
       this.$router.push({
         name: 'edit',
         params: {

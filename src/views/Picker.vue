@@ -1,5 +1,10 @@
 <template>
   <v-container fluid grid-list-sm>
+    <v-layout row>
+      <v-flex xs12>
+        <loader></loader>
+      </v-flex>
+    </v-layout>
     <v-layout row wrap>
       <v-flex
         xs6 sm4 d-flex
@@ -16,6 +21,7 @@
 </template>
 <script>
 import config from '../../config'
+import Loader from '../components/Loader.vue'
 import Thumbnail from '../components/Thumbnail.vue'
 
 export default {
@@ -25,6 +31,7 @@ export default {
     }
   },
   components: {
+    Loader,
     Thumbnail
   },
   methods: {
