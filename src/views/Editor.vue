@@ -231,6 +231,7 @@ export default {
     },
     save() {
       const blob = new Blob([JSON.stringify({
+        title: this.title,
         source: this.source,
         labels: this.labels
       }, null, '  ')], {
@@ -257,6 +258,10 @@ export default {
     this.video.on('timeupdate', () => {
       this.time = this.video.currentTime
     })
+
+    if (this.current) {
+      this.players = _.cloneDeep(this.current.players)
+    }
   }
 }
 </script>

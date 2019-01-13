@@ -55,9 +55,6 @@ export default {
       this.launch(files)
     },
     launch(files) {
-      // eslint-disable-next-line
-      console.log(files)
-
       if (files.length > 1) {
         this.error = 'Error: cannot open multiple files'
       } else if (files[0].type !== 'application/json') {
@@ -70,7 +67,7 @@ export default {
           this.$router.push({
             name: 'edit',
             params: {
-              title: project.source.title,
+              title: project.title,
               source: {
                 url: project.source.url,
                 type: project.source.type
