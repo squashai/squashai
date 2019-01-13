@@ -137,9 +137,9 @@ export default {
       player.position.z = specs.y
 
       player.material = new StandardMaterial(`${name}Material`, this.scene)
-
       player.material.diffuseColor = Color3.FromHexString(specs.color)
-
+      player.material.alpha = (this.disabled ? 0.7 : 1)
+      
       const behavior = new PointerDragBehavior({
         dragPlaneNormal: new Vector3(0,1,0)
       })
@@ -148,6 +148,7 @@ export default {
       
       player.addBehavior(behavior)
       player.controller = behavior
+      player.controller.enabled = !this.disabled
       
       behavior.onDragStartObservable.add(() => {
         this.refresh = true

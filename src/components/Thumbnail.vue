@@ -16,6 +16,12 @@ export default {
         return 'https://img.youtube.com/vi/F6UG6SZNdEY/mqdefault.jpg'
       }
     },
+    name: {
+      type: String,
+      default() {
+        return 'F6UG6SZNdEY.mp4'
+      }
+    },
     title: {
       type: String,
       default() {

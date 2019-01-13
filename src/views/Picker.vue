@@ -11,8 +11,9 @@
         v-for="video in list"
         :key="video.url">
         <thumbnail
-          :thumbnail="video.thumbnail"
+          :name="video.name"
           :title="video.title"
+          :thumbnail="video.thumbnail"
           :url="video.url">
         </thumbnail>
       </v-flex>
