@@ -12,7 +12,14 @@
     <transition name="bounce">
       <v-footer
         v-show="$route.name !== 'edit'">
-        <a href="https://medium.com">Blog</a>
+        <div class="px-3">
+          Squash<span class="font-weight-bold">AI</span> is in its
+          very initial stage; reach out through
+          <a href="https://github.com/squashai/squashai/issues" target="blank">
+            <span>GitHub issues</span>
+          </a>
+          if you want to share ideas.
+        </div>
       </v-footer>
     </transition>
   </v-app>
