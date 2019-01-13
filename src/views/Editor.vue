@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-toolbar>
       <v-toolbar-title>
-        {{ title }}
+        {{ source.title }}
       </v-toolbar-title>
     </v-toolbar>
     <v-layout justify-between>
@@ -115,16 +115,12 @@ export default {
     VuePlyr
   },
   props: {
-    title: {
-      type: String,
-      default() {
-        return 'Squash: Men\'s Round 3 Roundup - Hong Kong Open 2018'
-      }
-    },
     source: {
       type: Object,
       default() {
         return {
+          name: 'ohtRSiQ-HPg.mp4',
+          title: 'Squash: Men\'s Round 3 Roundup - Hong Kong Open 2018',
           url: 'https://gitlab.com/squashai/media/raw/master/ohtRSiQ-HPg.mp4',
           type: 'video/mp4'
         }
@@ -231,14 +227,14 @@ export default {
     },
     save() {
       const blob = new Blob([JSON.stringify({
-        title: this.title,
         source: this.source,
         labels: this.labels
       }, null, '  ')], {
         "type": "application/json"
       })
       const a = document.createElement("a")
-      a.download = 'test.json'
+      const flds = this.source.name.match(/[^.]+/)
+      a.download = `${flds ? flds[0] : 'project'}.json`
       a.href = URL.createObjectURL(blob)
       document.body.appendChild(a)
       a.click()

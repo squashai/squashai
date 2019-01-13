@@ -41,10 +41,11 @@ export default {
       this.$router.push({
         name: 'edit',
         params: {
-          title: this.title,
           source: {
+            name: this.name,
+            title: this.title,
             url: this.url,
-            type: this.type,
+            type: this.type
           }
         }
       })

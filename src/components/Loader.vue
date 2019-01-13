@@ -72,8 +72,9 @@ export default {
           this.$router.push({
             name: 'edit',
             params: {
-              title: project.title,
               source: {
+                name: project.source.name,
+                title: project.source.title,
                 url: project.source.url,
                 type: project.source.type
               },
