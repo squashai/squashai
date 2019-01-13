@@ -28,6 +28,12 @@
           <v-card-text>
             <v-list dense>
               <v-list-tile>
+                <v-list-tile-content>Total projects:</v-list-tile-content>
+                <v-list-tile-content class="align-end">
+                  {{ projects && projects.length || 0 }}
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
                 <v-list-tile-content>Total labels:</v-list-tile-content>
                 <v-list-tile-content class="align-end">
                   {{ total }}
