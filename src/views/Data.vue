@@ -58,7 +58,7 @@
       <v-flex xs12 sm6 md4 d-flex>
         <v-card flat>
           <v-card-title>
-            <h2>Names</h2>
+            <h2>Player Names</h2>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
@@ -78,7 +78,7 @@
       <v-flex xs12 sm6 md4 d-flex>
         <v-card flat>
           <v-card-title>
-            <h2>Colors</h2>
+            <h2>Shirt Colors</h2>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
