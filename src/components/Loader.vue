@@ -13,7 +13,7 @@
       v-if="error">
       <v-icon
         small
-        @click="error = null">cancel
+        @click="cleanup">cancel
       </v-icon>
       {{ error }}
     </span>
@@ -53,6 +53,11 @@ export default {
       const files = evt.dataTransfer.files
 
       this.launch(files)
+    },
+    cleanup(evt) {
+      evt.stopPropagation()
+      evt.preventDefault()
+      this.error = null
     },
     launch(files) {
       if (files.length > 1) {
