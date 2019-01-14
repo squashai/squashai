@@ -19,7 +19,7 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs12 sm6 md4 d-flex>
+      <v-flex xs12 sm6 md3 d-flex>
         <v-card flat>
           <v-card-title>
             <h2>Summary</h2>
@@ -55,7 +55,7 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs12 sm6 md4 d-flex>
+      <v-flex xs12 sm6 md3 d-flex>
         <v-card flat>
           <v-card-title>
             <h2>Player Names</h2>
@@ -75,7 +75,7 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs12 sm6 md4 d-flex>
+      <v-flex xs12 sm6 md3 d-flex>
         <v-card flat>
           <v-card-title>
             <h2>Shirt Colors</h2>
@@ -99,19 +99,44 @@
           </v-card-text>
         </v-card>
       </v-flex>
+      <v-flex xs12 sm6 md3 d-flex>
+        <v-card flat>
+          <v-card-title>
+            <h2>Court Coverage</h2>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-img
+            class="white--text"
+            :src="parquet">
+            <table>
+              <tr
+                v-for="(row, i) in coverage"
+                :key="i">
+                <td
+                  class="font-weight-bold"
+                  v-for="(val, j) in row"
+                  :key="j">
+                  {{ val }}
+                </td>
+              </tr>
+            </table>
+          </v-img>
+        </v-card>
+      </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 <script>
 import config from '../../config'
 import _ from 'lodash'
+import parquet from '../assets/ground.png'
 
 export default {
 
   data() {
     return {
-      projects: null
+      projects: null,
+      parquet
     }
   },
   computed: {
@@ -161,6 +186,31 @@ export default {
       })
 
       return colors
+    },
+    coverage() {
+      const steps = 5
+      const width = 6.4
+      const length = 9.75
+      const zones = _.times(steps, () => {
+        return _.times(steps, () => {
+          return 0
+        })
+      })
+
+      _.each(this.projects, (project) => {
+        _.each(project.labels, (label) => {
+          _.each(label.players, (player) => {
+            if (player.visible) {
+              const i = Math.floor((player.x + width / 2) / (width / steps))
+              const j = Math.floor((player.y + length / 2) / (length / steps))
+              zones[steps - i - 1][j] += 1
+            }
+          })
+        })
+      })
+
+      return zones;
+
     }
   },
   async mounted() {
@@ -178,11 +228,23 @@ export default {
       return r.json()
     }))
 
-  }  
+  } 
 }
 </script>
 <style>
 .box {
     border: 1px solid black;
 }
+
+table {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    text-align: center;
+}
+
+td {
+    width: 20%;
+}
+
 </style>
