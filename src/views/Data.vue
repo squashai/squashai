@@ -201,8 +201,8 @@ export default {
         _.each(project.labels, (label) => {
           _.each(label.players, (player) => {
             if (player.visible) {
-              const i = Math.floor((player.x + width / 2) / (width / steps))
-              const j = Math.floor((player.y + length / 2) / (length / steps))
+              const j = Math.floor((player.x + width / 2) / (width / steps))
+              const i = Math.floor((player.y + length / 2) / (length / steps))
               zones[steps - i - 1][j] += 1
             }
           })
