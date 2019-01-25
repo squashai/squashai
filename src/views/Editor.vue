@@ -162,7 +162,11 @@ export default {
         controls: [
           'play', 'rewind', 'fast-forward', 'progress', 'current-time',
           'mute', 'volume'
-        ]
+        ],
+        keyboard: {
+          focused: false,
+          global: false
+        }
       },
       players: {
         1: {
@@ -264,6 +268,28 @@ export default {
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
+    },
+    keystroke(e) {
+      if (e.path[0].tagName !== 'INPUT' && e.path[0].type !== 'text') {
+        switch (e.code) {
+        case 'ArrowLeft':
+          this.video.currentTime = Math.max(0, this.video.currentTime - 0.5)
+          break
+        case 'ArrowRight':
+          this.video.currentTime = Math.min(this.video.duration,
+                                            this.video.currentTime + 0.5)
+          break
+        case 'ArrowUp':
+          this.next()
+          break
+        case 'ArrowDown':
+          this.prev()
+          break
+        case 'Space':
+          this.toggle()
+          break
+        }
+      }
     }
   },
   watch: {
@@ -276,6 +302,8 @@ export default {
     }
   },
   mounted() {
+    window.addEventListener('keyup', this.keystroke)
+
     this.video.on('timeupdate', () => {
       this.time = this.video.currentTime
     })
@@ -303,6 +331,9 @@ export default {
     if (this.current) {
       this.players = _.cloneDeep(this.current.players)
     }
+  },
+  destroyed() {
+    window.removeEventListener("keyup", this.keystroke)
   }
 }
 </script>
