@@ -1,5 +1,22 @@
 <template>
   <v-container fluid>
+    <v-dialog
+      v-model="loading"
+      persistent
+      width="300">
+      <v-card
+        color="primary"
+        dark>
+        <v-card-text>
+          Loading
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0">
+          </v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-toolbar>
       <v-toolbar-title>
         {{ source.title }}
@@ -10,13 +27,13 @@
         <player
           v-model="players[1]"
           label="Player 1"
-          :disabled="!!current"/>
+          :disabled="!!current || !!playing"/>
       </v-flex>
       <v-flex xs6 md4>
         <player
           v-model="players[2]"
           label="Player 2"
-          :disabled="!!current"/>
+          :disabled="!!current || !!playing"/>
       </v-flex>
     </v-layout>
     <v-layout row wrap align-end class="pa-0">
@@ -41,14 +58,14 @@
                 <v-switch
                   v-model="action"
                   label="Action"
-                  :disabled="!!current">
+                  :disabled="!!current || !!playing">
                 </v-switch>
               </div>
               <div>
                 <v-switch
                   v-model="replay"
                   label="Replay"
-                  :disabled="!!current">
+                  :disabled="!!current || !!playing">
                 </v-switch>
               </div>
             </v-layout>
@@ -56,7 +73,7 @@
           <v-flex>
             <court
               v-model="players"
-              :disabled="!!current">
+              :disabled="!!current || !!playing">
             </court>
           </v-flex>
           <v-flex>
@@ -64,18 +81,19 @@
               <v-btn
                 @click="toggle"
                 :color="current ? 'primary' : undefined"
-                icon>
+                icon
+                :disabled="!!playing">
                 <v-icon>label</v-icon>
               </v-btn>
               <v-btn
                 @click="prev"
-                :disabled="first"
+                :disabled="first || !!playing"
                 icon>
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
               <v-btn
                 @click="next"
-                :disabled="last"
+                :disabled="last || !!playing"
                 icon>
                 <v-icon>fast_forward</v-icon>
               </v-btn>
@@ -84,14 +102,15 @@
                 :min="labels.length > 0 ? 1 : 0"
                 :max="labels.length"
                 v-model="position"
-                disabled>
+                :disabled="labels.length < 1 || !!playing"
+                always-dirty>
               </v-slider>
               <span class="grey--text">
                 {{ current ? position : '-' }}/{{ labels.length }}
               </span>
               <v-btn
                 @click="save"
-                :disabled="labels.length === 0"
+                :disabled="labels.length === 0 || !!playing"
                 icon>
                 <v-icon>get_app</v-icon>
               </v-btn>
@@ -135,6 +154,8 @@ export default {
   },
   data() {
     return {
+      loading: true,
+      playing: false,
       options: {
         seekTime: 0.5,
         invertTime: false,
@@ -182,12 +203,16 @@ export default {
         time: this.time
       })
     },
-    position() {
-      const idx = _.findIndex(this.labels, (l) => {
-        return l.time >= this.time
-      })
-
-      return (idx >= 0 ? idx + 1 : this.labels.length)
+    position: {
+      get() {
+        const idx = _.findIndex(this.labels, (l) => {
+          return l.time >= this.time
+        })
+        return (idx >= 0 ? idx + 1 : this.labels.length)
+      },
+      set(id) {
+        this.video.currentTime = this.labels[id - 1].time
+      }      
     }
   },
   methods: {
@@ -255,6 +280,26 @@ export default {
       this.time = this.video.currentTime
     })
 
+    const seek = _.debounce(() => {
+      this.loading = true
+    }, 200)
+
+    this.video.on('seeking', seek)
+
+    this.video.on('seeked', seek.cancel)
+
+    this.video.on('canplay', () => {
+      this.loading = false
+    })
+
+    this.video.on('playing', () => {
+      this.playing = true
+    })
+
+    this.video.on('pause', () => {
+      this.playing = false
+    })
+    
     if (this.current) {
       this.players = _.cloneDeep(this.current.players)
     }
