@@ -270,7 +270,8 @@ export default {
       document.body.removeChild(a)
     },
     keystroke(e) {
-      if (e.path[0].tagName !== 'INPUT' && e.path[0].type !== 'text') {
+      if (e.path[0].tagName !== 'INPUT' && e.path[0].type !== 'text' &&
+          !this.playing && !this.loading) {
         switch (e.code) {
         case 'ArrowLeft':
           this.video.currentTime = Math.max(0, this.video.currentTime - 0.5)
