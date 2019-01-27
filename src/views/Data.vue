@@ -64,11 +64,11 @@
           <v-card-text>
             <v-list dense>
               <v-list-tile
-                v-for="(num, name) in names"
-                :key="name">
-                <v-list-tile-content>{{ name }}:</v-list-tile-content>
+                v-for="player in names"
+                :key="player.name">
+                <v-list-tile-content>{{ player.name }}:</v-list-tile-content>
                 <v-list-tile-content class="align-end">
-                  {{ num }}
+                  {{ player.count }}
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
@@ -84,15 +84,15 @@
           <v-card-text>
             <v-list dense>
               <v-list-tile
-                v-for="(num, color) in colors"
-                :key="color">
+                v-for="color in colors"
+                :key="color.color">
                 <v-list-tile-content>
                   <span>
-                    <v-icon class="box" :color="color">stars</v-icon>
+                    <v-icon class="box" :color="color.color">stars</v-icon>
                   </span>
                 </v-list-tile-content>
                 <v-list-tile-content class="align-end">
-                  {{ num }}
+                  {{ color.count }}
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
@@ -171,7 +171,16 @@ export default {
         })
       })
 
-      return names
+      const ret = []
+      _.each(names, (count, name) => {
+        ret.push({
+          name: name,
+          count: count
+        })
+      })
+
+      return _.sortBy(ret, ['count']).reverse()
+
     },
     colors() {
       const colors = {}
@@ -185,7 +194,15 @@ export default {
         })
       })
 
-      return colors
+      const ret = []
+      _.each(colors, (count, color) => {
+        ret.push({
+          color: color,
+          count: count
+        })
+      })
+
+      return _.sortBy(ret, ['count']).reverse()
     },
     coverage() {
       const steps = 5
