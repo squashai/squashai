@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "babylonjs": "^3.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "vue": "^2.5.17",
     "vue-color": "^2.7.0",
     "vue-plyr": "^5.0.4",
